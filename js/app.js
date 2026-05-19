@@ -493,6 +493,26 @@ const modalContents = {
       <p style="margin-top:10px">Disclaimer: Ontwikkeld met behulp van claude sonnet 4.6</p>
     `
   },
+  koffie: {
+    title: '☕ Buy me a coffee',
+    html: `
+      <p style="text-align:center">
+        <a href="https://buymeacoffee.com/geertvandeweyer" target="_blank" rel="noopener">
+          <img src="assets/img/qr-code.png" alt="QR-code Buy Me a Coffee" style="width:220px;height:220px;border-radius:8px">
+        </a>
+      </p>
+      <p style="text-align:center;margin-top:12px">
+        <a href="https://buymeacoffee.com/geertvandeweyer" target="_blank" rel="noopener" style="font-weight:bold">
+          buymeacoffee.com/geertvandeweyer
+        </a>
+      </p>
+      <p style="margin-top:12px;font-size:0.9em;color:#555">
+        <strong>Buy Me a Coffee</strong> is een platform waarmee je een kleine bijdrage kunt geven
+        aan de maker van een app of project — als bedankje, zonder verplichtingen.
+        Scan de QR-code of klik de link hierboven.
+      </p>
+    `
+  },
   licentie: {
     title: '📄 Licentie',
     html: `
