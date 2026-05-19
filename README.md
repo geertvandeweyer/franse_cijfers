@@ -21,6 +21,10 @@ Getest op Linux/Chrome, Windows/Chrome|Edge en Android/Chrome
 
 ## Deployment
 
+### Public
+
+[https://chiffres.geertvandeweyer.be](https://chiffres.geertvandeweyer.be)
+
 ### Lokaal (zonder scorebord)
 
 ```bash
@@ -97,3 +101,4 @@ api/stats.txt           scoreopslag (JSON, door webserver beschrijfbaar maken)
 
 MIT — vrij te gebruiken en aan te passen.
 Auteur: Geert Vandeweyer — geertvandeweyer@gmail.com — mei 2026
+Repository: https://github.com/geertvandeweyer/franse_cijfers

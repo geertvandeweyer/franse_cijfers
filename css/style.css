@@ -679,6 +679,8 @@ body.mode-listening .speech-only { display: none; }
 }
 
 .disc-btn {
+  display: inline-flex;
+  align-items: center;
   background: none;
   border: none;
   color: var(--muted);
@@ -686,6 +688,7 @@ body.mode-listening .speech-only { display: none; }
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 6px;
+  text-decoration: none;
   transition: background .15s, color .15s;
 }
 .disc-btn:hover { background: #E2E8F0; color: var(--text); }
