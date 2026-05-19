@@ -70,28 +70,63 @@ class SpeechChecker {
       rec.interimResults  = true;   // capture interim results for short words
       rec.maxAlternatives = 5;
 
-      let settled      = false;
-      let interimAlts  = [];        // last seen interim alternatives
+      let settled     = false;
+      let interimAlts = [];         // last seen interim alternatives
+      let retried     = false;      // allow one silent retry for very short words
+
       const settle = (fn, val) => {
         if (!settled) { settled = true; finalizeRecording(() => fn(val)); }
       };
 
-      rec.onresult = (event) => {
+      // Shared handlers — reused on the retry instance.
+      const onresult = (event) => {
         const result = event.results[event.results.length - 1];
-        const alts = Array.from(result).map(r => r.transcript.toLowerCase().trim());
+        const alts = Array.from(result)
+          .map(r => r.transcript.toLowerCase().trim())
+          .filter(s => s.length > 0);   // ignore empty strings
         if (result.isFinal) {
           settle(resolve, alts);
-        } else {
-          interimAlts = alts;       // cache in case onend fires without a final result
+        } else if (alts.length > 0) {
+          interimAlts = alts;
         }
       };
 
-      rec.onerror = (event) => { settle(reject, new Error(event.error)); };
-      // If the session ends without a final result, fall back to the last interim
-      // alternatives (common for very short single-word utterances like "deux").
+      const onerror = (event) => {
+        // no-speech with cached interims → use them.
+        // no-speech without interims → let onend decide (may retry).
+        if (event.error === 'no-speech' && interimAlts.length > 0) {
+          settle(resolve, interimAlts);
+        } else if (event.error !== 'no-speech') {
+          settle(reject, new Error(event.error));
+        }
+      };
+
+      rec.onresult = onresult;
+      rec.onerror  = onerror;
       rec.onend = () => {
-        if (interimAlts.length > 0) { settle(resolve, interimAlts); }
-        else                        { settle(reject,  new Error('no_speech')); }
+        if (settled) return;
+        if (interimAlts.length > 0) { settle(resolve, interimAlts); return; }
+        if (!retried) {
+          // First attempt produced nothing (common for very short words like "deux").
+          // Restart recognition once, silently — the mic indicator stays on screen.
+          retried = true;
+          interimAlts = [];
+          const rec2 = new this._SR();
+          rec2.lang            = 'fr-FR';
+          rec2.continuous      = false;
+          rec2.interimResults  = true;
+          rec2.maxAlternatives = 5;
+          rec2.onresult = onresult;
+          rec2.onerror  = onerror;
+          rec2.onend = () => {
+            if (settled) return;
+            if (interimAlts.length > 0) { settle(resolve, interimAlts); }
+            else                        { settle(reject,  new Error('no_speech')); }
+          };
+          try { rec2.start(); this._active = rec2; } catch (e) { settle(reject, new Error('no_speech')); }
+        } else {
+          settle(reject, new Error('no_speech'));
+        }
       };
 
       const startRecognition = () => {
@@ -218,12 +253,12 @@ class SpeechChecker {
    * Speak text aloud using the browser's SpeechSynthesis API (fr-FR voice).
    * @param {string} text
    */
-  speak(text) {
+  speak(text, rate = 0.75) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(text);
     utt.lang = 'fr-FR';
-    utt.rate = 0.75;
+    utt.rate = rate;
     window.speechSynthesis.speak(utt);
   }
 }

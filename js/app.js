@@ -19,6 +19,7 @@ let sessionBestStreakListening = 0;  // highest streak this session – listenin
 let nextTimer         = null;
 let retryCount      = 0;   // resets per question; >0 → use relaxed audio constraints
 let listenTimeout   = 5;   // seconds; configurable via #listen-timeout
+let ttsRate         = 0.75; // TTS playback rate; configurable via #tts-rate
 const MIN_STREAK    = 5;   // minimum streak to qualify for ranking
 let listenTimer     = null; // setTimeout handle for hard abort
 let speechReady     = false; // true after first Start click in speech mode
@@ -51,6 +52,7 @@ function hideSkip() { document.querySelectorAll('.btn-skip').forEach(b => b.hidd
 const nextBtn          = document.getElementById('next-btn');
 const retryBtn         = document.getElementById('retry-btn');
 const listenTimeoutEl  = document.getElementById('listen-timeout');
+const ttsRateEl        = document.getElementById('tts-rate');
 const modListeningBtn    = document.getElementById('mode-listening');
 const listeningForm      = document.getElementById('listening-form');
 const listeningInput     = document.getElementById('listening-input');
@@ -62,9 +64,11 @@ function loadPrefs() {
   rangeMin      = parseInt(localStorage.getItem('fc_rangeMin'))     || 1;
   rangeMax      = parseInt(localStorage.getItem('fc_rangeMax'))     || 1000;
   listenTimeout = parseInt(localStorage.getItem('fc_listenTimeout')) || 5;
+  ttsRate       = parseFloat(localStorage.getItem('fc_ttsRate'))     || 0.75;
   rangeMinEl.value        = rangeMin;
   rangeMaxEl.value        = rangeMax;
   listenTimeoutEl.value   = listenTimeout;
+  ttsRateEl.value         = ttsRate;
   applyMode(false);
 }
 
@@ -73,6 +77,7 @@ function savePrefs() {
   localStorage.setItem('fc_rangeMin',       rangeMin);
   localStorage.setItem('fc_rangeMax',       rangeMax);
   localStorage.setItem('fc_listenTimeout',  listenTimeout);
+  localStorage.setItem('fc_ttsRate',        ttsRate);
 }
 
 // ── mode switching ─────────────────────────────────────────────────────────
@@ -143,6 +148,11 @@ listenTimeoutEl.addEventListener('change', () => {
   savePrefs();
 });
 
+ttsRateEl.addEventListener('change', () => {
+  ttsRate = parseFloat(ttsRateEl.value) || 0.75;
+  savePrefs();
+});
+
 // ── question flow ──────────────────────────────────────────────────────────
 function nextQuestion() {
   clearTimeout(nextTimer);
@@ -172,7 +182,7 @@ function nextQuestion() {
     listeningInput.value = '';
     listeningInput.disabled = false;
     listeningReplayBtn.disabled = false;
-    speech.speak(toFrenchBelgian(currentNumber));
+    speech.speak(toFrenchBelgian(currentNumber), ttsRate);
     listeningInput.focus();
   } else {
     numberDisplay.textContent = currentNumber;
@@ -326,7 +336,7 @@ listeningInput.addEventListener('keydown', (e) => {
 });
 
 listeningReplayBtn.addEventListener('click', () => {
-  speech.speak(toFrenchBelgian(currentNumber));
+  speech.speak(toFrenchBelgian(currentNumber), ttsRate);
 });
 
 // ── speech mode ────────────────────────────────────────────────────────────

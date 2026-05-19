@@ -378,8 +378,27 @@ main {
 .btn-skip:hover  { background: #64748b; }
 .btn-skip:active { transform: scale(.97); }
 
-/* hide speech-only timer in listening mode */
+/* hide speech-only timer in listening/spelling mode; hide listening-only in others */
 body.mode-listening .speech-only { display: none; }
+.listening-only { display: none; }
+body.mode-listening .listening-only { display: inline-flex; align-items: center; gap: 6px; }
+
+.range-selector select {
+  padding: 5px 8px;
+  border: 2px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--text);
+  background: #F8FAFC;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.range-selector select:focus {
+  outline: none;
+  border-color: var(--blue);
+  background: #fff;
+}
 
 /* ── listening area ────────────────────────────────────────────────────── */
 #listening-area { width: 100%; }
