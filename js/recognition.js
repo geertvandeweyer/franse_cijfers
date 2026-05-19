@@ -67,22 +67,32 @@ class SpeechChecker {
       const rec = new this._SR();
       rec.lang            = 'fr-FR';
       rec.continuous      = false;
-      rec.interimResults  = false;
+      rec.interimResults  = true;   // capture interim results for short words
       rec.maxAlternatives = 5;
 
-      let settled = false;
+      let settled      = false;
+      let interimAlts  = [];        // last seen interim alternatives
       const settle = (fn, val) => {
         if (!settled) { settled = true; finalizeRecording(() => fn(val)); }
       };
 
       rec.onresult = (event) => {
-        const alts = Array.from(event.results[0])
-          .map(r => r.transcript.toLowerCase().trim());
-        settle(resolve, alts);
+        const result = event.results[event.results.length - 1];
+        const alts = Array.from(result).map(r => r.transcript.toLowerCase().trim());
+        if (result.isFinal) {
+          settle(resolve, alts);
+        } else {
+          interimAlts = alts;       // cache in case onend fires without a final result
+        }
       };
 
       rec.onerror = (event) => { settle(reject, new Error(event.error)); };
-      rec.onend   = () => { settle(reject, new Error('no_speech')); };
+      // If the session ends without a final result, fall back to the last interim
+      // alternatives (common for very short single-word utterances like "deux").
+      rec.onend = () => {
+        if (interimAlts.length > 0) { settle(resolve, interimAlts); }
+        else                        { settle(reject,  new Error('no_speech')); }
+      };
 
       const startRecognition = () => {
         try { rec.start(); this._active = rec; } catch (e) { settle(reject, e); }

@@ -362,6 +362,22 @@ main {
 .btn-retry:hover  { background: #D97706; }
 .btn-retry:active { transform: scale(.97); }
 
+.btn-skip {
+  background: #94a3b8;
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  padding: 14px 20px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(100,116,139,.3);
+  transition: background .15s, transform .1s;
+}
+.btn-skip:hover  { background: #64748b; }
+.btn-skip:active { transform: scale(.97); }
+
 /* hide speech-only timer in listening mode */
 body.mode-listening .speech-only { display: none; }
 

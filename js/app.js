@@ -46,6 +46,8 @@ const namePromptSaveEl  = document.getElementById('name-prompt-save');
 const namePromptErrorEl = document.getElementById('name-prompt-error');
 const browserWarning    = document.getElementById('browser-warning');
 const replayBtn        = document.getElementById('replay-btn');
+function showSkip() { document.querySelectorAll('.btn-skip').forEach(b => b.hidden = false); }
+function hideSkip() { document.querySelectorAll('.btn-skip').forEach(b => b.hidden = true); }
 const nextBtn          = document.getElementById('next-btn');
 const retryBtn         = document.getElementById('retry-btn');
 const listenTimeoutEl  = document.getElementById('listen-timeout');
@@ -156,6 +158,7 @@ function nextQuestion() {
   replayBtn.hidden = true;
   nextBtn.hidden   = true;
   retryBtn.hidden  = true;
+  if (mode === 'speech' && !speechReady) hideSkip(); else showSkip();
   retryCount       = 0;
   micBtn.disabled  = false;
 
@@ -237,6 +240,7 @@ function handleResult(isCorrect, debugInfo = null) {
   }
   feedbackEl.innerHTML = html;
 
+  hideSkip();
   updateStats();
   awaitingNext = true;
 
@@ -252,6 +256,34 @@ function handleResult(isCorrect, debugInfo = null) {
     nextTimer = setTimeout(nextQuestion, isCorrect ? 1300 : 2800);
   }
 }
+
+// ── skip ─────────────────────────────────────────────────────────────────
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.btn-skip')) return;
+  if (awaitingNext) return;
+  if (isListening) { speech.abort(); isListening = false; }
+  tracker.recordResult(currentNumber, false);
+  tracker.boostSimilar(currentNumber, rangeMin, rangeMax);
+  sessionAttempts++;
+  streak = 0;
+  const expected = toFrenchBelgian(currentNumber);
+  feedbackEl.innerHTML = `⏭ Overgeslagen &mdash; antwoord: <strong>${expected}</strong>`;
+  feedbackEl.className = 'feedback wrong';
+  hideSkip();
+  awaitingNext   = true;
+  updateStats();
+  if (mode === 'speech') {
+    micBtn.hidden   = true;
+    nextBtn.hidden  = false;
+    retryBtn.hidden = true;
+  } else {
+    if (mode === 'listening') {
+      listeningInput.disabled     = true;
+      listeningReplayBtn.disabled = true;
+    }
+    nextTimer = setTimeout(nextQuestion, 1500);
+  }
+});
 
 // ── spelling mode ──────────────────────────────────────────────────────────
 spellingForm.addEventListener('submit', (e) => {
@@ -317,6 +349,7 @@ function stopListenAnimation() {
 
 async function doListen() {
   isListening = true;
+  hideSkip();
   replayBtn.hidden = true;
   micBtn.classList.add('recording');
   micBtn.textContent = '⏹ Luisteren…';
@@ -341,16 +374,20 @@ async function doListen() {
         '🎧 Microfoon niet beschikbaar. '        + '<strong>Bluetooth-conflict?</strong> Pauzeer Spotify even, '
         + 'of gebruik de ingebouwde microfoon.';
       retryBtn.hidden = false;
+      showSkip();
     } else if (err.message === 'no_speech') {
       feedbackEl.textContent = '🔇 Geen spraak gedetecteerd.';
       retryBtn.hidden = false;
+      showSkip();
     } else if (err.message === 'aborted') {
       feedbackEl.textContent = '';
       feedbackEl.className   = 'feedback';
       retryBtn.hidden = false;
+      showSkip();
     } else if (err.message !== '_suppress') {
       feedbackEl.textContent = `Fout bij opname (${err.message}).`;
       retryBtn.hidden = false;
+      showSkip();
     }
   } finally {
     stopListenAnimation();
@@ -358,6 +395,7 @@ async function doListen() {
     micBtn.classList.remove('recording');
     micBtn.textContent = '▶ Start';
     micBtn.hidden = true;
+    if (!awaitingNext) showSkip();
   }
 }
 
