@@ -472,9 +472,12 @@ const modalContents = {
       <p style="margin-top:10px">Bij gebruik van de <strong>Spraak-modus</strong> stuurt de browser je audiofragment naar de servers van
       <strong>Google</strong> (Web Speech API) voor herkenning. Dit is een service van Google Chrome/Edge;
       er is geen aparte account vereist.</p>
-      <p style="margin-top:10px">In de <strong>Spelling-modus</strong> verlaat er geen data de browser.</p>
-      <p style="margin-top:10px">Oefenvoortgang (gewichten, scores) wordt opgeslagen in
+      <p style="margin-top:10px">In de <strong>Spelling-</strong> en <strong>Luisteren-modus</strong> verlaat er geen audio de browser.</p>
+      <p style="margin-top:10px">Oefenvoortgang (gewichten) wordt opgeslagen in
       <strong>localStorage</strong> van je eigen browser — enkel op dit apparaat, niet in de cloud.</p>
+      <p style="margin-top:10px">Bij het opslaan van een <strong>topscore</strong> worden je <strong>naam en reekslength</strong>
+      verstuurd naar en bewaard op de server van deze website (<code>api/stats.txt</code>).
+      Gebruik geen echte naam als je dat liever niet hebt.</p>
     `
   },
   auteur: {
@@ -482,8 +485,8 @@ const modalContents = {
     html: `
       <p><strong>Geert Van de Weyer</strong><br>
       <a href="mailto:geertvandeweyer@gmail.com">geertvandeweyer@gmail.com</a></p>
-      <p style="margin-top:10px">Gemaakt in mei 2026 als oefentool voor Franse cijfers (1–1000)
-      met Belgische notatie (septante / nonante).</p>
+      <p style="margin-top:10px">Gemaakt in mei 2026</p>
+      <p style="margin-top:10px">Disclaimer: Ontwikkeld met behulp van claude sonnet 4.6</p>
     `
   },
   licentie: {

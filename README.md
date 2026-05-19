@@ -102,3 +102,5 @@ api/stats.txt           scoreopslag (JSON, door webserver beschrijfbaar maken)
 MIT — vrij te gebruiken en aan te passen.
 Auteur: Geert Vandeweyer — geertvandeweyer@gmail.com — mei 2026
 Repository: https://github.com/geertvandeweyer/franse_cijfers
+
+> Ontwikkeld met behulp van Claude Sonnet 4.6
