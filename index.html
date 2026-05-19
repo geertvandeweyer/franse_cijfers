@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oefeningen Franse Cijfers</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ── header ──────────────────────────────────────────────────────────── -->
+  <header>
+    <h1>🇧🇪 Oefeningen Franse Cijfers</h1>
+    <div class="header-right">
+      <span id="streak" aria-live="polite"
+            title="Reeks opeenvolgende juiste antwoorden"
+            aria-label="Huidige reeks"></span>
+      <span id="stats" aria-live="polite"
+            title="Juist / totaal aantal pogingen deze sessie">✓ 0 / 0 (0%)</span>
+      <button id="leaderboard-btn" class="btn-icon" title="Toplijst bekijken" aria-label="Toplijst">🏆</button>
+      <button id="reset-btn" class="btn-icon"
+              title="Volledige voortgang wissen (alle gewichten resetten)"
+              aria-label="Voortgang wissen">↺</button>
+    </div>
+  </header>
+
+  <!-- ── browser warning (hidden until needed) ───────────────────────────── -->
+  <div id="browser-warning" role="alert" hidden>
+    ⚠️ Spraakherkenning wordt niet ondersteund in deze browser.
+    Gebruik <strong>Google Chrome</strong> of <strong>Microsoft Edge</strong>.
+  </div>
+
+  <!-- ── inline name prompt (verschijnt bij top-10 reeks) ─────────────────── -->
+  <div id="name-prompt" hidden aria-live="polite">
+    <span id="name-prompt-msg"></span>
+    <div class="name-prompt-form">
+      <input type="text" id="name-prompt-input" maxlength="30"
+             placeholder="Jouw naam…"
+             autocomplete="off" autocorrect="off"
+             autocapitalize="words" spellcheck="false">
+      <button id="name-prompt-save" class="btn-primary">Opslaan</button>
+    </div>
+    <div id="name-prompt-error" class="lb-error" aria-live="polite"></div>
+  </div>
+
+  <!-- ── main ────────────────────────────────────────────────────────────── -->
+  <main>
+
+    <!-- settings: mode + range -->
+    <div class="settings-bar">
+      <div class="mode-toggle" role="group" aria-label="Oefenmodus">
+        <button id="mode-spelling"  class="mode-btn active" aria-pressed="true">⌨️ Spelling</button>
+        <button id="mode-speech"    class="mode-btn"        aria-pressed="false">🎤 Spraak</button>
+        <button id="mode-listening" class="mode-btn"        aria-pressed="false">🔊 Luisteren</button>
+      </div>
+
+      <div class="range-selector" aria-label="Getalsbereik">
+        <label for="range-min">Van</label>
+        <input type="number" id="range-min" min="1" max="999" value="1"
+               aria-label="Minimum getal">
+        <span aria-hidden="true">—</span>
+        <label for="range-max">tot</label>
+        <input type="number" id="range-max" min="2" max="1000" value="100"
+               value="1000" aria-label="Maximum getal">
+        <span class="speech-only" aria-hidden="true">
+          <span class="timer-sep">|</span>
+          <label for="listen-timeout" title="Maximale luistertijd per poging">⏱</label>
+          <input type="number" id="listen-timeout" min="2" max="15" value="5"
+                 aria-label="Luistertijd in seconden">
+          <span>s</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- number to translate -->
+    <div class="number-card" aria-label="Te oefenen getal">
+      <div id="number-display" role="status" aria-live="polite">—</div>
+    </div>
+
+    <!-- feedback -->
+    <div id="feedback" class="feedback" role="alert" aria-live="assertive"></div>
+
+    <!-- speech input -->
+    <div id="speech-area" hidden>
+      <div class="speech-controls">
+        <button id="mic-btn" class="mic-btn" aria-label="Start spraakopname">
+          🎤 Spreek
+        </button>
+        <button id="replay-btn" class="btn-replay" hidden aria-label="Beluister opname">
+          ▶ Replay
+        </button>
+        <button id="next-btn" class="btn-next" hidden aria-label="Volgende oefening">
+          Volgende ▶
+        </button>
+        <button id="retry-btn" class="btn-retry" hidden aria-label="Opnieuw proberen">
+          🔄 Opnieuw
+        </button>
+      </div>
+    </div>
+
+    <!-- listening input -->
+    <div id="listening-area" hidden>
+      <form id="listening-form" novalidate>
+        <button type="button" id="listening-replay-btn" class="btn-replay"
+                aria-label="Opnieuw afspelen">🔊 Opnieuw</button>
+        <input
+          type="text"
+          inputmode="numeric"
+          id="listening-input"
+          pattern="[0-9]*"
+          placeholder="Typ het getal…"
+          autocomplete="off"
+          aria-label="Jouw antwoord als getal"
+        >
+        <button type="submit" class="btn-primary">Controleer</button>
+      </form>
+    </div>
+
+    <!-- spelling input -->
+    <div id="spelling-area">
+      <form id="spelling-form" novalidate>
+        <input
+          type="text"
+          id="spelling-input"
+          placeholder="Schrijf het getal in het Frans…"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="none"
+          spellcheck="false"
+          aria-label="Jouw antwoord in het Frans"
+        >
+        <button type="submit" class="btn-primary">Controleer</button>
+      </form>
+    </div>
+
+    <!-- hardest numbers (shown only when data exists) -->
+    <section id="hardest-section" aria-label="Moeilijkste getallen" hidden>
+      <h2>⚠️ Moeilijkste getallen</h2>
+      <ul id="hardest-list"></ul>
+    </section>
+
+  </main>
+
+  <!-- ── footer / disclaimer bar ────────────────────────────────────────── -->
+  <footer class="disclaimer-bar">
+    <button class="disc-btn" data-modal="data">ℹ️ Gegevensgebruik</button>
+    <button class="disc-btn" data-modal="auteur">✉️ Auteur</button>
+    <button class="disc-btn" data-modal="licentie">📄 Licentie</button>
+  </footer>
+
+  <!-- ── modal ───────────────────────────────────────────────────────────── -->
+  <div id="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="modal-box">
+      <div id="modal-header">
+        <h2 id="modal-title"></h2>
+        <button id="modal-close" aria-label="Sluiten">✕</button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ── scripts (loaded in dependency order) ────────────────────────────── -->
+  <script src="js/numbers.js"></script>
+  <script src="js/repetition.js"></script>
+  <script src="js/recognition.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
