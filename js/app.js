@@ -475,7 +475,7 @@ const modalContents = {
       <p style="margin-top:10px">In de <strong>Spelling-</strong> en <strong>Luisteren-modus</strong> verlaat er geen audio de browser.</p>
       <p style="margin-top:10px">Oefenvoortgang (gewichten) wordt opgeslagen in
       <strong>localStorage</strong> van je eigen browser — enkel op dit apparaat, niet in de cloud.</p>
-      <p style="margin-top:10px">Bij het opslaan van een <strong>topscore</strong> worden je <strong>naam en reekslength</strong>
+      <p style="margin-top:10px">Bij het opslaan van een <strong>topscore</strong> worden je <strong>naam en reekslengte</strong>
       verstuurd naar en bewaard op de server van deze website (<code>api/stats.txt</code>).
       Gebruik geen echte naam als je dat liever niet hebt.</p>
     `
@@ -483,7 +483,7 @@ const modalContents = {
   auteur: {
     title: '✉️ Auteur',
     html: `
-      <p><strong>Geert Van de Weyer</strong><br>
+      <p><strong>Geert Vandeweyer</strong><br>
       <a href="mailto:geertvandeweyer@gmail.com">geertvandeweyer@gmail.com</a></p>
       <p style="margin-top:10px">Gemaakt in mei 2026</p>
       <p style="margin-top:10px">Disclaimer: Ontwikkeld met behulp van claude sonnet 4.6</p>
