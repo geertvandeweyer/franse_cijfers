@@ -478,6 +478,10 @@ const modalContents = {
       <p style="margin-top:10px">Bij het opslaan van een <strong>topscore</strong> worden je <strong>naam en reekslengte</strong>
       verstuurd naar en bewaard op de server van deze website (<code>api/stats.txt</code>).
       Gebruik geen echte naam als je dat liever niet hebt.</p>
+      <p style="margin-top:10px">Daarnaast worden <strong>anonieme gebruiksstatistieken</strong> verzameld via
+      <strong>Cloudflare Web Analytics</strong>: er worden <strong>geen cookies</strong> geplaatst en
+      <strong>geen persoonlijke gegevens</strong> opgeslagen. Dit dient enkel om een algemeen
+      overzicht te krijgen van het gebruik van de app.</p>
     `
   },
   auteur: {
