@@ -5,6 +5,12 @@ Drie oefenmodi, spaced repetition en een scorebord per modus.
 
 ---
 
+## Publieke versie
+
+De app is beschikbaar op : [https://chiffres.geertvandeweyer.be](https://chiffres.geertvandeweyer.be)
+
+---
+
 ## Modi
 
 | Modus | Wat je doet | Controle |
